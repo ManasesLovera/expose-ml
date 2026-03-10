@@ -1,0 +1,11 @@
+# Python Packages
+.venv
+
+# Cache files
+__pycache__
+
+# Models
+saved_models/*.pkl
+
+# Example vectors data
+example_data.txt
