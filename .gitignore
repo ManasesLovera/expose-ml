@@ -1,5 +1,6 @@
 # Python Packages
 .venv
+.env
 
 # Cache files
 __pycache__

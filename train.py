@@ -1,5 +1,7 @@
 import joblib
 import os
+from pathlib import Path
+
 from ucimlrepo import fetch_ucirepo
 import pandas as pd
 from sklearn.model_selection import train_test_split
@@ -10,6 +12,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report
 
 from sklearn.base import ClassifierMixin
+from settings import settings
 
 def train():
 
@@ -53,8 +56,10 @@ def train():
         "Logistic Regression": LogisticRegression()
     }
 
-    # Create a directory for models if it doesn't exist
-    os.makedirs("saved_models", exist_ok=True)
+    # Create a directory for model artifacts if it doesn't exist.
+    models_dir = Path(settings.models_dir)
+    os.makedirs(models_dir, exist_ok=True)
+    joblib.dump(scaler, models_dir / settings.scaler_filename)
 
     for name, model in models.items():
         # Train
@@ -62,10 +67,13 @@ def train():
         
         # Save to disk
         # Replaces spaces with underscores for clean filenames
-        filename = f"saved_models/{name.lower().replace(' ', '_')}_model.pkl"
+        filename = models_dir / f"{name.lower().replace(' ', '_')}_model.pkl"
         joblib.dump(model, filename)
         
         # Evaluate
         y_pred = model.predict(X_test)
         print(f"\n--- {name} (Saved to {filename}) ---")
         print(classification_report(y_test, y_pred))
+
+if __name__ == "__main__":
+    train()
